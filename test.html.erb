@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+    <h1>Test！！！！！！！！！！！！！</h1>
+
+   <% require 'pg' %> 
+    <% connection = 
+    PG::connect(user:"postgres", dbname: "goya", port: '5432', password: "kings")%>
+    <% connection.internal_encoding = "UTF-8" %>
+
+    <% result = connection.exec("SELECT * FROM crops WHERE quality = false;") %>
+    <% date = [] %> 
+
+    <% result.each do |row| %>
+      <%  date << 'Poor Quality = (%s, %s, %s, %s, %s,%s)' % [row['id'], row['lenght'], row['weight'], row['quality'], row['give_for'], row['date']] %><br/>
+    <% end %>
+
+    <form action="goya.cgi" method="POST">
+       Press the button below to jump to THE LIST OF POOR QUALITY PRODUCTS<br><br>
+       <!-- Substitute the data you want to send for value -->
+       <!-- Make name = "goya" a mark of information -->
+      <input type="text" name="goya" value="<%= date.join(' ') %>">
+      <input type="submit" name="submit" >
+    </form>
+  </body>
+</html>
